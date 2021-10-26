@@ -27,10 +27,11 @@ app.get("/api/hello", function (req, res) {
 
 
 app.get("/api/timestamp", function(req, res) {
+
   var now = new Date()
   res.json({
     "unix": now.getTime(),
-    "utc": passedInValue.toUTCString()
+    "utc": now.toUTCString()
   });
 });
 
