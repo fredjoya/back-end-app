@@ -34,8 +34,16 @@ app.get("/", function (req, res) {
 });
 
 
-app.get("/URLshortener", function (req, res) {
-  res.sendFile(__dirname + '/views/URLshortener.html');
+app.get("/timestamp", function (req, res) {
+  res.sendFile(__dirname + '/views/timestamp.html');
+});
+
+app.get("/url-shortener", function (req, res) {
+  res.sendFile(__dirname + '/views/url-shortener.html');
+});
+
+app.get("/exercise-tracker", function (req, res) {
+  res.sendFile(__dirname + '/views/exercise-tracker.html');
 });
 
 let responseObject = {}
@@ -128,7 +136,7 @@ app.get("/api/shorturl/:suffix", function (req, res) {
   let userGenSuffix = req.params.suffix;
   ShortURL.find({suffix: userGenSuffix}).then(function(foundUrls) {
   let urlForRedirect = foundUrls[0];
-  
+
   res.redirect(urlForRedirect.original_url);
   });
     // res.json({
