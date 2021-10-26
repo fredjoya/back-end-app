@@ -9,6 +9,7 @@ var port = process.env.PORT || 3000;
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
+const { response } = require('express');
 app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
@@ -18,6 +19,17 @@ app.use(express.static('public'));
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
+
+
+let responseObject = {}
+app.enable("trust proxy")
+app.get("/api/whoami", function (req, res) {
+  responseObject["ipaddress"] = req.ip
+  responseObject["language"] = req.get("Accept-Language")
+  responseObject["software"] = req.get("user-agent")
+  res.json(responseObject)
+});
+
 
 
 // your first API endpoint... 
