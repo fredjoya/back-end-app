@@ -9,6 +9,7 @@ var bodyParser = require("body-parser");
 var mongo = require("mongodb");
 var mongoose = require("mongoose");
 var shortid = require("shortid");
+const {Schema} = mongoose;
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -158,6 +159,7 @@ app.get("/api/shorturl/:suffix", function (req, res) {
 
 
  let exerciseSchema = new mongoose.Schema({ 
+  _id: String,
   description: String,
   duration: Number,
   date: String
@@ -192,6 +194,31 @@ let newUser = new User({
   });
 });
 
+
+
+
+const userId = "_id"
+
+
+const personSchema = new Schema({username: String});
+const Person = mongoose.model("Person", personSchema);
+
+
+
+
+
+app.post("api/exercise/new-user", (req, res) => {
+  const newPerson = new Person({username: req.body.username});
+  newPerson.save((err, data) => {
+    res.json({"username": "", "_id": data.username, "_id": data.id});
+});
+});
+
+app.post("/api/users/:_id/exercises", (req, res) => {
+res.json({"request": req.body})
+})
+
+
 app.get("/api/exercise/users", function(req, res) {
    User.find({}, function(err, arrayOfUsers) {
      if(err) return console.error(err);
@@ -199,6 +226,9 @@ app.get("/api/exercise/users", function(req, res) {
 
    });
   });
+
+
+
 
 
 
