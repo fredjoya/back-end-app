@@ -38,6 +38,10 @@ app.get("/timestamp", function (req, res) {
   res.sendFile(__dirname + '/views/timestamp.html');
 });
 
+app.get("/header-parser", function (req, res) {
+  res.sendFile(__dirname + '/views/header-parser.html');
+});
+
 app.get("/url-shortener", function (req, res) {
   res.sendFile(__dirname + '/views/url-shortener.html');
 });
@@ -54,6 +58,9 @@ app.get("/api/whoami", function (req, res) {
   responseObject["software"] = req.get("user-agent")
   res.json(responseObject)
 });
+
+
+
 
 
 
