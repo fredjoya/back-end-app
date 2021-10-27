@@ -13,7 +13,7 @@ var shortid = require("shortid");
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
-const { response } = require('express');
+const { response, request } = require('express');
 app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
 
@@ -22,6 +22,8 @@ mongoose.connect(database_uri, {
   useNewUrlParser: true, 
   useUnifiedTopology: true
 });
+
+
 
 
 
@@ -50,6 +52,10 @@ app.get("/exercise-tracker", function (req, res) {
   res.sendFile(__dirname + '/views/exercise-tracker.html');
 });
 
+app.get("/url-shortener", function (req, res) {
+  res.sendFile(__dirname + '/views/url-shortener.html');
+});
+
 let responseObject = {}
 app.enable("trust proxy")
 app.get("/api/whoami", function (req, res) {
@@ -58,8 +64,6 @@ app.get("/api/whoami", function (req, res) {
   responseObject["software"] = req.get("user-agent")
   res.json(responseObject)
 });
-
-
 
 
 
@@ -122,7 +126,7 @@ app.use(bodyParser.json())
     let client_req_url = req.body.url
     let suffix = shortid.generate();
     let newShortURL = suffix
-    console.log(suffix, "this will be suffix");
+    
     let newURL = ShortURL({
       short_url: __dirname + "/api/shorturl/" + suffix,
       original_url: client_req_url,
@@ -151,7 +155,60 @@ app.get("/api/shorturl/:suffix", function (req, res) {
     //   "userReqUrl": userReqUrl
     // })
   });
+
+
+ let exerciseSchema = new mongoose.Schema({ 
+  description: String,
+  duration: Number,
+  date: String
+});
  
+let userSchema = new mongoose.Schema({
+  username: String,
+  log: [exerciseSchema] 
+})
+
+let Session = mongoose.model("Session", exerciseSchema);
+let User = mongoose.model("User", userSchema);
+
+
+
+    let newUser = User({
+      username: String,
+      _id: String
+    })
+
+app.post("/api/users", function (req, res) {
+let mongooseGenID = mongoose.Types.ObjectId();
+let newUser = new User({
+    username: req.body.username
+    });
+  newUser.save(function(err, doc) {
+    if(err) return console.error(err);
+      res.json({
+      "username": newUser.username,
+      "_id": newUser["_id"]
+    });
+  });
+});
+
+app.get("/api/exercise/users", function(req, res) {
+   User.find({}, function(err, arrayOfUsers) {
+     if(err) return console.error(err);
+     res.json(arrayOfUsers)
+
+   });
+  });
+
+
+
+
+
+
+
+
+
+
 
 // listen for requests :)
 var listener = app.listen(port, function () {
